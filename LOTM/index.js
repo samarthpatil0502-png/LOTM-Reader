@@ -1,14 +1,22 @@
-const express = require("express")
+
+const express = require("express");
 const app = express();
-const path = require("path")
+const path = require("path");
 
-const PORT = 8080;
+app.use(express.static(path.join(__dirname, "public")));
 
-app.get("/", (req,res) => {
-    res.sendFile(path.join(__dirname,"public", "intro.html"))
+app.get("/", (req, res) => {
+    res.redirect("/intro.html");
 });
-app.use(express.static(path.join(__dirname,"public")));
 
-app.listen(PORT, () => {
-    console.log(`Server is running on ${PORT}`);
-});
+const PORT = process.env.PORT || 8080;
+
+// Export Express app for Vercel
+module.exports = app;
+
+// Start local server when running directly
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server is running on port ${PORT}`);
+    });
+}
