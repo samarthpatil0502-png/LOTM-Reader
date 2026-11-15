@@ -6,7 +6,7 @@ const path = require("path");
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get("/", (req, res) => {
-    res.redirect("/intro.html");
+    res.sendFile(path.join(__dirname, "public", "intro.html"));
 });
 
 const PORT = process.env.PORT || 8080;
