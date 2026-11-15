@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookReader – Chapter</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Cinzel+Decorative:wght@900&family=IM+Fell+English:ital@0;1&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,300;1,400&display=swap');
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            background: url('images/klein3.jpg') center center / cover no-repeat fixed;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        /* ── MAIN DISPLAY DIV (mirrors .disp from index.html) ── */
+        .disp {
+            border: 2px solid black;
+            width: 100%;
+            max-width: 860px;
+            background-color: rgba(2, 27, 34, 0.92);
+            border-radius: 30px;
+            min-height: 500px;
+            backdrop-filter: blur(4px);
+            display: flex;
+            flex-direction: column;
+            padding: 50px 60px;
+            gap: 0;
+        }
+
+        /* ── CHAPTER HEADER ── */
+        .chapter-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 24px;
+            border-bottom: 1px solid rgba(176, 160, 128, 0.4);
+        }
+
+        .chapter-label {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+            color: #c8aa60;
+            margin-bottom: 10px;
+        }
+
+        .chapter-title {
+            font-family: 'Cinzel Decorative', serif;
+            font-weight: 900;
+            font-size: 1.6rem;
+            color: #e8e0d0;
+            letter-spacing: 0.06em;
+            line-height: 1.3;
+        }
+
+        /* ── CHAPTER BODY TEXT ── */
+        .chapter-body {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 1.15rem;
+            line-height: 1.9;
+            color: #d8d0c0;
+        }
+
+        .chapter-body p {
+            margin-bottom: 1.2em;
+            text-indent: 2em;
+        }
+
+        .chapter-body p em {
+            font-style: italic;
+            color: #c8bfaa;
+        }
+
+        .chapter-body p strong {
+            font-weight: 600;
+            color: #e8e0d0;
+        }
+
+        /* Section headings inside the chapter */
+        .chapter-body h1,
+        .chapter-body h2,
+        .chapter-body h3 {
+            font-family: 'Cinzel', serif;
+            font-weight: 700;
+            color: #c8aa60;
+            text-align: center;
+            margin: 2em 0 1em;
+            letter-spacing: 0.08em;
+        }
+
+        /* Images embedded in chapters */
+        .chapter-body img {
+            display: block;
+            max-width: 100%;
+            margin: 2em auto;
+            border-radius: 6px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        /* Horizontal rules */
+        .chapter-body hr {
+            border: none;
+            border-top: 1px solid rgba(176,160,128,0.3);
+            margin: 2em auto;
+            width: 60%;
+        }
+
+        /* Footnotes */
+        .chapter-body .footnotes {
+            margin-top: 3em;
+            padding-top: 1.5em;
+            border-top: 1px solid rgba(176,160,128,0.25);
+            font-size: 0.9rem;
+            color: #8a9aa8;
+        }
+
+        /* ── NAV BUTTONS ── */
+        .nav-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 50px;
+            padding-top: 28px;
+            border-top: 1px solid rgba(176, 160, 128, 0.4);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .nav-bar .center-info {
+            font-family: 'Cinzel', serif;
+            font-size: 11px;
+            letter-spacing: 0.15em;
+            color: #6a8090;
+            text-align: center;
+            flex: 1;
+        }
+
+        button {
+            font-family: 'Cinzel', serif;
+            font-weight: 900;
+            font-size: 12px;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: #e8e0d0;
+            background: transparent;
+            border: 1.5px solid #b0a080;
+            border-radius: 2px;
+            padding: 11px 24px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s, border-color 0.3s, background 0.3s;
+        }
+
+        button .fill {
+            position: absolute;
+            inset: 0;
+            background: #c8aa60;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 0;
+        }
+
+        button span { position: relative; z-index: 1; }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px;
+            width: 7px; height: 7px;
+            border-style: solid;
+            border-color: #c8aa60;
+            border-width: 2px 0 0 2px;
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            z-index: 2;
+        }
+
+        button::after {
+            content: '';
+            position: absolute;
+            bottom: -2px; right: -2px;
+            width: 7px; height: 7px;
+            border-style: solid;
+            border-color: #c8aa60;
+            border-width: 0 2px 2px 0;
+            transition: width 0.3s, height 0.3s, border-color 0.3s;
+            z-index: 2;
+        }
+
+        button:hover .fill       { transform: scaleX(1); }
+        button:hover             { color: #1a1108; border-color: #c8aa60; }
+        button:hover::before,
+        button:hover::after      { border-color: #1a1108; width: 10px; height: 10px; }
+        button:active            { transform: scale(0.97); }
+        button:disabled          { opacity: 0.3; cursor: default; pointer-events: none; }
+
+        /* ── LOADING / ERROR STATES ── */
+        .state-msg {
+            font-family: 'Cinzel', serif;
+            font-size: 14px;
+            color: #4a6070;
+            letter-spacing: 0.1em;
+            text-align: center;
+            padding: 3rem;
+            margin: auto;
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 600px) {
+            .disp { padding: 30px 24px; }
+            .chapter-title { font-size: 1.2rem; }
+            .chapter-body { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="disp" id="disp">
+        <p class="state-msg">Loading chapter…</p>
+    </div>
+
+    <script>
+        // ── URL PARAMS ──
+        // Expected: chapter.html?vol=1&ch=1&globalCh=1&title=Crimson&volKey=vol1
+        const params    = new URLSearchParams(window.location.search);
+        const volNum    = parseInt(params.get('vol'))      || 1;
+        const localCh   = parseInt(params.get('ch'))       || 1;
+        const globalCh  = parseInt(params.get('globalCh')) || 1;
+        const chTitle   = params.get('title')              || '';
+        const volKey    = params.get('volKey')             || ('vol' + volNum);
+
+        // ── XHTML FILE MAPPING ──
+        // ch001–ch004 are preamble (Foreword, Credits, Synopsis, Volume title)
+        // So: global chapter N → EPUB/text/ch(N+4).xhtml
+        // But within the zip, volume title pages also exist between volumes.
+        // The safe mapping confirmed: xhtmlIndex = globalCh + 4
+        // Each volume starts at a different file number because of the
+// Pathways Guide / Image Gallery / title pages sitting between volumes.
+// This table is the file number of each volume's Chapter 1, minus 1.
+const volFileBase = {
+    vol1: 4, vol2: 220, vol3: 492, vol4: 745,
+    vol5: 962, vol6: 1170, vol7: 1289, vol8: 1379, vol9: 1423
+};
+
+const xhtmlIndex = volFileBase[volKey] + localCh;
+const xhtmlFile  = 'EPUB/text/ch' + String(xhtmlIndex).padStart(3, '0') + '.xhtml';
+
+        // ── TOTAL CHAPTERS PER VOLUME (for prev/next bounds) ──
+        const volChapters = { vol1: 213, vol2: 269, vol3: 250, vol4: 214, vol5: 204, vol6: 116, vol7: 87, vol8: 41, vol9: 72 };
+        const volOffset   = { vol1: 0, vol2: 213, vol3: 482, vol4: 732, vol5: 946, vol6: 1150, vol7: 1266, vol8: 1353, vol9: 1394 };
+
+        const volNames    = {
+            vol1: 'Volume 1: Clown', vol2: 'Volume 2: Faceless', vol3: 'Volume 3: Traveller',
+            vol4: 'Volume 4: Undying', vol5: 'Volume 5: Red Priest', vol6: 'Volume 6: Lightseeker',
+            vol7: 'Volume 7: The Hanged Man', vol8: 'Volume 8: Fool', vol9: 'Volume 9: Side Stories'
+        };
+
+        const totalChInVol = volChapters[volKey] || 0;
+
+        // ── NAVIGATION HELPERS ──
+        function buildUrl(newLocalCh, newGlobalCh, newTitle, newVolKey, newVolNum) {
+            return `chapter.html?vol=${newVolNum}&ch=${newLocalCh}&globalCh=${newGlobalCh}&title=${encodeURIComponent(newTitle)}&volKey=${newVolKey}`;
+        }
+
+        // ── FETCH & RENDER ──
+        async function loadChapter() {
+            const disp = document.getElementById('disp');
+
+            try {
+                const res = await fetch(xhtmlFile);
+                if (!res.ok) throw new Error(`HTTP ${res.status}`);
+                const text = await res.text();
+
+                // Parse the xhtml
+                const parser = new DOMParser();
+                const doc    = parser.parseFromString(text, 'application/xhtml+xml');
+
+                // Extract body content
+                const body = doc.querySelector('body');
+                if (!body) throw new Error('No body found');
+
+                // Remove the chapter heading (h1/h2) — we display it ourselves
+                const headings = body.querySelectorAll('h1, h2');
+                headings.forEach(h => h.remove());
+
+                // Fix image paths: ../media/fileX.webp → EPUB/media/fileX.webp
+                body.querySelectorAll('img').forEach(img => {
+                    const src = img.getAttribute('src') || '';
+                    if (src.startsWith('../media/')) {
+                        img.setAttribute('src', 'EPUB/media/' + src.replace('../media/', ''));
+                    }
+                });
+
+                // Fix anchor hrefs inside footnotes
+                body.querySelectorAll('a[href]').forEach(a => {
+                    // Remove epub footnote links that won't work
+                    if (a.getAttribute('href').startsWith('#fn')) {
+                        a.removeAttribute('href');
+                        a.style.color = '#8a9aa8';
+                        a.style.cursor = 'default';
+                    }
+                });
+
+                const bodyHTML = body.innerHTML;
+
+                // Determine prev/next
+                const hasPrev = localCh > 1;
+                const hasNext = localCh < totalChInVol;
+
+                const prevUrl = hasPrev
+                    ? `chapter.html?vol=${volNum}&ch=${localCh - 1}&globalCh=${globalCh - 1}&volKey=${volKey}`
+                    : '#';
+                const nextUrl = hasNext
+                    ? `chapter.html?vol=${volNum}&ch=${localCh + 1}&globalCh=${globalCh + 1}&volKey=${volKey}`
+                    : '#';
+
+                document.title = `Ch. ${globalCh} — ${chTitle || 'Chapter'}`;
+
+                disp.innerHTML = `
+                    <div class="chapter-header">
+                        <div class="chapter-label">${volNames[volKey] || ''} &nbsp;·&nbsp; Chapter ${localCh}</div>
+                        <div class="chapter-title">${chTitle || 'Chapter ' + localCh}</div>
+                    </div>
+
+                    <div class="chapter-body" id="chapter-body">
+                        ${bodyHTML}
+                    </div>
+
+                    <div class="nav-bar">
+                        <a href="${prevUrl}" style="text-decoration:none;">
+                            <button ${!hasPrev ? 'disabled' : ''}>
+                                <div class="fill"></div>
+                                <span>&#8592; Prev</span>
+                            </button>
+                        </a>
+                        <span class="center-info">
+                            <a href="video.html?vol=${volNum}" style="color:#6a8090;text-decoration:none;letter-spacing:0.12em;font-family:'Cinzel',serif;font-size:11px;">
+                                &#8617; Chapter List
+                            </a>
+                        </span>
+                        <a href="${nextUrl}" style="text-decoration:none;">
+                            <button ${!hasNext ? 'disabled' : ''}>
+                                <div class="fill"></div>
+                                <span>Next &#8594;</span>
+                            </button>
+                        </a>
+                    </div>
+                `;
+
+            } catch (err) {
+                disp.innerHTML = `
+                    <div class="state-msg">
+                        <p>Could not load chapter file.</p>
+                        <p style="margin-top:12px;font-size:11px;color:#3a5060;">${xhtmlFile}</p>
+                        <p style="margin-top:8px;font-size:11px;color:#3a5060;">${err.message}</p>
+                        <p style="margin-top:20px;">
+                            <a href="video.html?vol=${volNum}" style="color:#c8aa60;font-family:'Cinzel',serif;font-size:11px;letter-spacing:0.1em;">
+                                &#8592; Back to Chapter List
+                            </a>
+                        </p>
+                    </div>
+                `;
+            }
+        }
+
+        loadChapter();
+    </script>
+
+</body>
+</html>
